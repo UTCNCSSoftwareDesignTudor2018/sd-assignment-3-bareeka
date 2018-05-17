@@ -1,8 +1,7 @@
 package client.communication;
 
-import client.GUI;
+import client.presentation.GUI;
 
-import javax.swing.*;
 import java.io.IOException;
 
 public class Client {
@@ -16,7 +15,7 @@ public class Client {
         this.gui = new GUI();
         this.interpreter = new Interpreter(gui);
         this.handler = new Handler(HOST,PORT,interpreter);
-        handler.start();
+        //handler.start();
     }
 
     public static void main(String[] args) throws IOException {

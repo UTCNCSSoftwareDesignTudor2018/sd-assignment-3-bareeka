@@ -2,10 +2,8 @@ package client.communication;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
-import client.GUI;
+import client.presentation.GUI;
 import com.google.gson.Gson;
 import server.persistence.entity.Article;
 
@@ -13,14 +11,9 @@ import server.persistence.entity.Article;
 public class Interpreter {
 
     private static final String ALL_ARTICLES="findall_articles";
-    private static final String RECEIVE_ARTICLES ="receive_articles";
-    private static final String REQUEST_LOGIN ="login";
-    private static final String SEND_LOGIN_TYPE_WRITER ="login_successful_writer";
-    private static final String SEND_LOGIN_FAILED ="login_failed";
-
-    private static final String CREATE_ARTICLE ="create_article";
-    private static final String EDIT_ARTICLE ="edit_article";
-    private static final String REQUEST_WRITERS="request_writers";
+    private static final String NEW_ARTICLE ="new_article";
+    private static final String UPDATE_ARTICLE ="update_article";
+    private static final String DELETE_ARTICLE="delete_article";
     private Handler handler;
     private Writer writer = null;
     private Gson gson;
@@ -42,6 +35,15 @@ public class Interpreter {
         sendMessage(new Message(ALL_ARTICLES,null));
     }
 
+    public void createArticle(Article a){ sendMessage(new Message(NEW_ARTICLE,serializeObject(a)));
+    }
+
+    public void updateArticle(Article a){ sendMessage(new Message(UPDATE_ARTICLE,serializeObject(a)));
+    }
+
+    public void deleteArticle(Article a){ sendMessage(new Message(DELETE_ARTICLE,serializeObject(a)));
+    }
+
     void setHandler(Handler handler){
         this.handler = handler;
     }
@@ -53,10 +55,8 @@ public class Interpreter {
 
         if(command.equals(ALL_ARTICLES)){
             ArrayList<Article> articles = (ArrayList<Article>) deserializeObject(message.getMsg());
-            for(Article a: articles){
-                System.out.println(a.getTitle());
-            }
-            //gui.refreshArticles(articles);
+            gui.refreshArticles(articles);
+            System.out.println("Articles Refreshed");
         }
 
         // messages to process

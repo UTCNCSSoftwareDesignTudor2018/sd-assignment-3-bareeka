@@ -1,24 +1,21 @@
 package server.communication;
 
 import java.io.*;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import com.google.gson.Gson;
 import server.Controller;
+import server.persistence.entity.Article;
 import server.persistence.entity.Writer;
 
 public class Interpreter implements Observer {
 
     private static final String ALL_ARTICLES="findall_articles";
-    private static final String RECEIVE_ARTICLES ="receive_articles";
-    private static final String REQUEST_LOGIN ="login";
-    private static final String SEND_LOGIN_TYPE_WRITER ="login_successful_writer";
-    private static final String SEND_LOGIN_FAILED ="login_failed";
-
-    private static final String CREATE_ARTICLE ="create_article";
-    private static final String EDIT_ARTICLE ="edit_article";
-    private static final String REQUEST_WRITERS="request_writers";
+    private static final String NEW_ARTICLE ="new_article";
+    private static final String UPDATE_ARTICLE ="update_article";
+    private static final String DELETE_ARTICLE="delete_article";
     private Handler handler;
     private Writer writer = null;
     private Gson gson;
@@ -42,8 +39,23 @@ public class Interpreter implements Observer {
         String command = message.getName();
         if(command.equals(ALL_ARTICLES)){
             System.out.println(controller.findAllArticles());
-            handler.sendMessage(new Message(ALL_ARTICLES,serializeObject(controller.findAllArticles())));
+            updateArticles();
 
+        }else if(command.equals(NEW_ARTICLE)){
+            System.out.println("New Article coming");
+            controller.addArticle((Article)deserializeObject(message.getMsg()));
+            updateArticles();
+        }else if(command.equals(UPDATE_ARTICLE)){
+            System.out.println("Updating article");
+            Article article = (Article)deserializeObject(message.getMsg());
+            System.out.println(article.toString());
+            controller.updateArticle(article);
+            updateArticles();
+        }else if(command.equals(DELETE_ARTICLE)){
+            System.out.println("Deleting article");
+            Article article = (Article)deserializeObject(message.getMsg());
+            controller.deleteArticle(article);
+            updateArticles();
         }
 
         // messages to process
@@ -51,7 +63,13 @@ public class Interpreter implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        handler.sendMessage(new Message(RECEIVE_ARTICLES,serializeObject(controller.findAllArticles())));
+        System.out.println("update!");
+        updateArticles();
+        System.out.println("Updating state...");
+    }
+
+    public void updateArticles(){
+        handler.sendMessage(new Message(ALL_ARTICLES,serializeObject(controller.findAllArticles())));
     }
 
     public void close(){

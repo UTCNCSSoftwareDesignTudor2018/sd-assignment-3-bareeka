@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="146.0" y="148.0">server.business.ArticleBLL</node>
+    <node x="0.0" y="148.0">server.Controller</node>
+    <node x="177.0" y="74.0">server.persistence.entity</node>
+    <node x="0.0" y="222.0">server.business.WriterBLL</node>
+    <node x="0.0" y="74.0">server.persistence.repository</node>
+    <node x="144.0" y="222.0">server.Test</node>
+    <node x="0.0" y="0.0">server.communication</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.4000000000000004" x="139.5454545454545" y="168.28571428571422" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class Handler extends Thread {
+public class Handler {
 
     private final PrintWriter out;
     private final BufferedReader in;
@@ -24,15 +24,21 @@ public class Handler extends Thread {
         out = new PrintWriter(serverSocket.getOutputStream(),true);
         in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
         interpreter.setHandler(this);
+        listen();
     }
 
     public void sendMessage(Message message){
         out.println(gson.toJson(message));
     }
 
+
+    public void listen(){
+        listener = new Thread(new MessageHandler());
+        listener.start();
+    }
     public void disconnect(){
         try{
-            this.interrupt();
+            listener.interrupt();
             in.close();
             out.close();
             serverSocket.close();
@@ -41,15 +47,21 @@ public class Handler extends Thread {
         }
     }
 
-    public void run(){
-        String msg;
+    private class MessageHandler implements Runnable {
+        public void run() {
+            String msg;
+            System.out.println("Listening to messages");
 
-        try{
-            while((msg = in.readLine())!=null){
-                interpreter.process(msg);
+            try {
+                while (true) {
+                    if ((msg = in.readLine()) != null) {
+                        System.out.println("received message");
+                        interpreter.process(msg);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

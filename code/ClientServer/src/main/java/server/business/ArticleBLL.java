@@ -30,6 +30,14 @@ public class ArticleBLL {
         return ar.findAll();
     }
 
+    public void updateArticle(Article article){
+        Article old = ar.findByTitle(article.getTitle());
+        System.out.println(old.toString());
+        String body = article.getBody();
+        old.setBody(body);
+        ar.updateArticle(body,old);
+    }
+
     public synchronized Article findByTitle(String title){
         return ar.findByTitle(title);
     }

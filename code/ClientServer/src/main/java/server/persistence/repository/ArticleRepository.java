@@ -16,7 +16,8 @@ public class ArticleRepository {
 
     private Document getDoc(Article article){
 
-        Document document = new Document("title",article.getTitle())
+        Document document = new Document()
+                .append("title",article.getTitle())
                 .append("abstract",article.getArticleAbstract())
                 .append("body",article.getBody())
                 .append("writer",article.getWriter().getName());
@@ -27,6 +28,7 @@ public class ArticleRepository {
     private Article getArticle(Document document){
         WriterRepository wr = new WriterRepository();
         Article article = new Article(
+                document.getObjectId("_id"),
                 document.getString("title"),
                 document.getString("abstract"),
                 document.getString("body"),
@@ -42,9 +44,13 @@ public class ArticleRepository {
     }
 
 
+    public void updateArticle(String body,Article article){
+        MongoCollection<Document> ac = getArticleCollection();
+        ac.replaceOne(eq("title",article.getTitle()),getDoc(article));
+    }
 
     public void addArticle(Article article){
-        MongoCollection ac = getArticleCollection();
+        MongoCollection<Document> ac = getArticleCollection();
         ac.insertOne(getDoc(article));
 
     }

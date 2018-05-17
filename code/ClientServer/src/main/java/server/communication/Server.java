@@ -21,7 +21,7 @@ public class Server {
         try{
             while(true){
                 Handler h = new Handler(serverSocket.accept(),clientNo);
-                h.start();
+                //h.start();
             }
         } catch (IOException e) {
             e.printStackTrace();

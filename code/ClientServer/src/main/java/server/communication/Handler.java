@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class Handler extends Thread {
+public class Handler {
 
     private Thread listener;
     private Socket socket;
@@ -26,32 +26,37 @@ public class Handler extends Thread {
         this.interpreter = new Interpreter();
         interpreter.setHandler(this);
         System.out.println("Handling message...");
+        listen();
     }
 
     public void sendMessage(Message message){
         out.println(gson.toJson(message));
     }
 
+    public void listen(){
+        listener = new Thread(new MessageHandler());
+        listener.start();
+    }
 
 
+    private class MessageHandler implements Runnable{
 
+        @Override
+        public void run() {
+            String msg;
 
-
-    public void run(){
-        String msg;
-
-        try{
-            while((msg = in.readLine())!=null){
-                interpreter.process(msg);
-            }
+            try {
+                while ((msg = in.readLine()) != null) {
+                    interpreter.process(msg);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
-            }finally{
+            } finally {
                 System.out.println(Handler.this.clientNo + " Disconnected");
                 out.close();
-                try{
+                try {
                     in.close();
-                }catch (IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 try {
@@ -63,5 +68,6 @@ public class Handler extends Thread {
             }
         }
 
+    }
 
 }
